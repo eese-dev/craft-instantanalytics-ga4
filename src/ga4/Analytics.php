@@ -14,6 +14,8 @@ namespace nystudio107\instantanalyticsGa4\ga4;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\AbstractEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Request\BaseRequest;
 use Br33f\Ga4\MeasurementProtocol\Dto\Response\BaseResponse;
+use Br33f\Ga4\MeasurementProtocol\Exception\HydrationException;
+use Br33f\Ga4\MeasurementProtocol\Exception\ValidationException;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
 use craft\commerce\elements\Order;
@@ -24,6 +26,7 @@ use craft\helpers\App;
 use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -113,8 +116,8 @@ class Analytics
      * Send the events collected so far.
      *
      * @return BaseResponse|null
-     * @throws \Br33f\Ga4\MeasurementProtocol\Exception\HydrationException
-     * @throws \Br33f\Ga4\MeasurementProtocol\Exception\ValidationException
+     * @throws HydrationException
+     * @throws ValidationException
      */
     public function sendCollectedEvents(): ?array
     {
@@ -180,6 +183,11 @@ class Analytics
         return $responses;
     }
 
+    public function getAffiliation(): ?string
+    {
+        return $this->_affiliation;
+    }
+
     /**
      * Set affiliation for all the events that incorporate Commerce Product info for the remaining duration of request.
      *
@@ -192,20 +200,16 @@ class Analytics
         return $this;
     }
 
-    public function getAffiliation(): ?string
-    {
-        return $this->_affiliation;
-    }
-
     /**
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
      * @param int $index
      * @param string $listName
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function addCommerceProductImpression(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
+    public function addCommerceProductImpression(Product|Variant $productVariant, int $index = 0, string $listName = 'default')
+    {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
     }
 
@@ -214,7 +218,8 @@ class Analytics
      *
      * @param Order $cart
      */
-    public function beginCheckout(Order $cart) {
+    public function beginCheckout(Order $cart)
+    {
         InstantAnalytics::$plugin->commerce->triggerBeginCheckoutEvent($cart);
     }
 
@@ -224,10 +229,11 @@ class Analytics
      * @param Product|Variant $productVariant
      * @param int $index
      * @param string $listName
-     * @throws \yii\base\InvalidConfigException
-     *@deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
+     * @throws InvalidConfigException
+     * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      */
-    public function addCommerceProductDetailView(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
+    public function addCommerceProductDetailView(Product|Variant $productVariant, int $index = 0, string $listName = 'default')
+    {
         Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
         $this->addCommerceProductImpression($productVariant);
     }
@@ -238,7 +244,8 @@ class Analytics
      * @param array $products
      * @param $listName
      */
-    public function addCommerceProductListImpression(array $products, string $listName = 'default') {
+    public function addCommerceProductListImpression(array $products, string $listName = 'default')
+    {
         InstantAnalytics::$plugin->commerce->addCommerceProductListImpression($products, $listName);
     }
 
@@ -310,7 +317,7 @@ class Analytics
         return null;
     }
 
-    protected function request(): BaseRequest
+    public function request(): BaseRequest
     {
         if ($this->_request === null) {
             $this->_request = new BaseRequest();
