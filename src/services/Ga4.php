@@ -30,9 +30,9 @@ use nystudio107\seomatic\helpers\Json;
 class Ga4 extends Component
 {
     /**
-     * @var Analytics
+     * @var ?Analytics
      */
-    private $_analytics;
+    private $_analytics = null;
 
     /**
      * @var bool
@@ -42,7 +42,7 @@ class Ga4 extends Component
     public function getAnalytics(): Analytics
     {
         if (!$this->_analytics) {
-            $this->_analytics = \Craft::createObject(Analytics::class);
+            $this->_analytics = Craft::createObject(Analytics::class);
             $this->_analytics->init();
         }
 
@@ -80,7 +80,7 @@ class Ga4 extends Component
     public function addSimpleEvent(string $url, string $eventName, array $params): void
     {
         $baseEvent = $this->getSimpleEvent($eventName);
-        $baseEvent->setDocumentPath(parse_url($url, PHP_URL_PATH));
+        $baseEvent->setParamValue('documentPath', parse_url($url, PHP_URL_PATH));
 
         foreach ($params as $param => $value) {
             $baseEvent->addParam($param, new BaseParameter($value));

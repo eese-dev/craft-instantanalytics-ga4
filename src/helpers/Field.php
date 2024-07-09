@@ -26,6 +26,7 @@ use craft\fields\Tags as TagsField;
 use craft\models\FieldLayout;
 use craft\models\Volume;
 use craft\redactor\Field as RedactorField;
+use Exception;
 
 /**
  * @author    nystudio107
@@ -80,7 +81,7 @@ class Field
         if (!empty(self::FIELD_CLASSES[$fieldClassKey])) {
             $fieldClasses = self::FIELD_CLASSES[$fieldClassKey];
             $fields = $layout->getCustomFields();
-            /** @var  $field BaseField */
+            /** @var BaseField $field */
             foreach ($fields as $field) {
                 /** @var array $fieldClasses */
                 foreach ($fieldClasses as $fieldClass) {
@@ -184,6 +185,7 @@ class Field
         $globals = Craft::$app->getGlobals()->getAllSets();
         foreach ($globals as $global) {
             $layout = $global->getFieldLayout();
+            /** @phpstan-ignore-next-line */
             if ($layout) {
                 $fields = self::fieldsOfTypeFromLayout($fieldClassKey, $layout, $keysOnly);
                 // Prefix the keys with the global set name
@@ -226,7 +228,7 @@ class Field
         }
         if ($matrixBlockTypeModel) {
             $fields = $matrixBlockTypeModel->getCustomFields();
-            /** @var  $field BaseField */
+            /** @var BaseField $field */
             foreach ($fields as $field) {
                 if ($field instanceof $fieldType) {
                     $foundFields[$field->handle] = $field->name;
