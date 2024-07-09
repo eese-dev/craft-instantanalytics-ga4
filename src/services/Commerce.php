@@ -21,7 +21,6 @@ use craft\commerce\models\LineItem;
 use craft\commerce\Plugin as CommercePlugin;
 use craft\elements\db\CategoryQuery;
 use craft\elements\db\EntryQuery;
-use craft\elements\db\MatrixBlockQuery;
 use craft\elements\db\TagQuery;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use yii\base\InvalidConfigException;
