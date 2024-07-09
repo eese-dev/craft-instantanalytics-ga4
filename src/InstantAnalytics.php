@@ -201,7 +201,7 @@ class InstantAnalytics extends Plugin
                 $productFields = $this->getPullFieldsFromLayoutId($productType->fieldLayoutId);
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $commerceFields = array_merge($commerceFields, $productFields);
-                if ($productType->hasVariants) {
+                if ($productType->maxVariants > 1) {
                     $variantFields = $this->getPullFieldsFromLayoutId($productType->variantFieldLayoutId);
                     /** @noinspection SlowArrayOperationsInLoopInspection */
                     $commerceFields = array_merge($commerceFields, $variantFields);

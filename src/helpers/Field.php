@@ -15,7 +15,7 @@ use Craft;
 use craft\base\Element;
 use craft\base\Field as BaseField;
 use craft\ckeditor\Field as CKEditorField;
-use craft\elements\MatrixBlock;
+use craft\elements\Entry;
 use craft\elements\User;
 use craft\fields\Assets as AssetsField;
 use craft\fields\Categories as CategoriesField;
@@ -27,6 +27,7 @@ use craft\models\FieldLayout;
 use craft\models\Volume;
 use craft\redactor\Field as RedactorField;
 use Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -209,36 +210,35 @@ class Field
     }
 
     /**
-     * Return all the fields in the $matrixBlock of the type $fieldType class
+     * Return all of the fields in the $matrixEntry of the type $fieldType class
      *
-     * @param MatrixBlock $matrixBlock
+     * @param Entry $matrixEntry
      * @param string $fieldType
      * @param bool $keysOnly
      *
      * @return array
      */
-    public static function matrixFieldsOfType(MatrixBlock $matrixBlock, string $fieldType, bool $keysOnly = true): array
+    public static function matrixFieldsOfType(Entry $matrixEntry, string $fieldType, bool $keysOnly = true): array
     {
         $foundFields = [];
 
         try {
-            $matrixBlockTypeModel = $matrixBlock->getType();
-        } catch (Exception $e) {
-            $matrixBlockTypeModel = null;
+            $matrixEntryTypeModel = $matrixEntry->getType();
+        } catch (InvalidConfigException $e) {
+            $matrixEntryTypeModel = null;
         }
-        if ($matrixBlockTypeModel) {
-            $fields = $matrixBlockTypeModel->getCustomFields();
+        if ($matrixEntryTypeModel) {
+            $fields = $matrixEntryTypeModel->getCustomFields();
             /** @var BaseField $field */
             foreach ($fields as $field) {
                 if ($field instanceof $fieldType) {
                     $foundFields[$field->handle] = $field->name;
                 }
             }
-        }
-
-        // Return only the keys if asked
-        if ($keysOnly) {
-            $foundFields = array_keys($foundFields);
+            // Return only the keys if asked
+            if ($keysOnly) {
+                $foundFields = array_keys($foundFields);
+            }
         }
 
         return $foundFields;

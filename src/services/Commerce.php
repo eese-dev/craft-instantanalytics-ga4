@@ -388,14 +388,12 @@ class Commerce extends Component
                 return $result;
             }
             switch (get_class($srcField)) {
-                case MatrixBlockQuery::class:
                 case TagQuery::class:
                     break;
                 case CategoryQuery::class:
                 case EntryQuery::class:
                     $result = $this->getDataFromElements($isBrand, $srcField->all());
                     break;
-
 
                 default:
                     $result = strip_tags($srcField->__toString());
