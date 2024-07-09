@@ -74,9 +74,8 @@ class Field
     public static function fieldsOfTypeFromLayout(
         string      $fieldClassKey,
         FieldLayout $layout,
-        bool        $keysOnly = true
-    ): array
-    {
+        bool        $keysOnly = true,
+    ): array {
         $foundFields = [];
         if (!empty(self::FIELD_CLASSES[$fieldClassKey])) {
             $fieldClasses = self::FIELD_CLASSES[$fieldClassKey];
@@ -112,9 +111,8 @@ class Field
     public static function fieldsOfTypeFromElement(
         Element $element,
         string  $fieldClassKey,
-        bool    $keysOnly = true
-    ): array
-    {
+        bool    $keysOnly = true,
+    ): array {
         $foundFields = [];
         $layout = $element->getFieldLayout();
         if ($layout !== null) {
@@ -191,7 +189,7 @@ class Field
                 // Prefix the keys with the global set name
                 $prefix = $global->handle;
                 $fields = array_combine(
-                    array_map(static function ($key) use ($prefix) {
+                    array_map(static function($key) use ($prefix) {
                         return $prefix . '.' . $key;
                     }, array_keys($fields)),
                     $fields

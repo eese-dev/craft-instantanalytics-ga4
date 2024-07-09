@@ -241,7 +241,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event): void {
+            function(Event $event): void {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('instantAnalytics', [
@@ -261,7 +261,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event): void {
+            function(PluginEvent $event): void {
                 if ($event->plugin === $this) {
                     $request = Craft::$app->getRequest();
                     if ($request->isCpRequest) {
@@ -275,7 +275,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_LOAD_PLUGINS,
-            function () {
+            function() {
                 // Determine if Craft Commerce is installed & enabled
                 self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
                 // Determine if SEOmatic is installed & enabled
@@ -305,7 +305,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event): void {
+            function(RegisterUrlRulesEvent $event): void {
                 Craft::debug(
                     'UrlManager::EVENT_REGISTER_SITE_URL_RULES',
                     __METHOD__
@@ -321,7 +321,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             View::class,
             View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE,
-            static function (TemplateEvent $event): void {
+            static function(TemplateEvent $event): void {
                 self::$currentTemplate = $event->template;
             }
         );
@@ -329,7 +329,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             View::class,
             View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
-            function (TemplateEvent $event): void {
+            function(TemplateEvent $event): void {
                 if (self::$settings->autoSendPageView) {
                     $request = Craft::$app->getRequest();
                     if (!$request->getIsAjax()) {
@@ -343,7 +343,7 @@ class InstantAnalytics extends Plugin
         Event::on(
             Response::class,
             Response::EVENT_BEFORE_SEND,
-            function (Event $event): void {
+            function(Event $event): void {
                 // Initialize this sooner rather than later, since it's possible this will want to tinker with cookies
                 $this->ga4->getAnalytics();
             }
@@ -353,21 +353,21 @@ class InstantAnalytics extends Plugin
         Event::on(
             Response::class,
             Response::EVENT_AFTER_SEND,
-            function (Event $event): void {
+            function(Event $event): void {
                 $this->ga4->getAnalytics()->sendCollectedEvents();
             }
         );
 
         // Commerce-specific hooks
         if (self::$commercePlugin !== null) {
-            Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, function (Event $e): void {
+            Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, function(Event $e): void {
                 $order = $e->sender;
                 if (self::$settings->autoSendPurchaseComplete) {
                     $this->commerce->triggerOrderCompleteEvent($order);
                 }
             });
 
-            Event::on(Order::class, Order::EVENT_AFTER_ADD_LINE_ITEM, function (LineItemEvent $e): void {
+            Event::on(Order::class, Order::EVENT_AFTER_ADD_LINE_ITEM, function(LineItemEvent $e): void {
                 $lineItem = $e->lineItem;
                 if (self::$settings->autoSendAddToCart) {
                     $this->commerce->triggerAddToCartEvent($lineItem);
@@ -376,7 +376,7 @@ class InstantAnalytics extends Plugin
 
             // Check to make sure Order::EVENT_AFTER_REMOVE_LINE_ITEM is defined
             if (defined(Order::class . '::EVENT_AFTER_REMOVE_LINE_ITEM')) {
-                Event::on(Order::class, Order::EVENT_AFTER_REMOVE_LINE_ITEM, function (LineItemEvent $e): void {
+                Event::on(Order::class, Order::EVENT_AFTER_REMOVE_LINE_ITEM, function(LineItemEvent $e): void {
                     $lineItem = $e->lineItem;
                     if (self::$settings->autoSendRemoveFromCart) {
                         $this->commerce->triggerRemoveFromCartEvent($lineItem);
