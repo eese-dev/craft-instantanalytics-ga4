@@ -18,7 +18,7 @@ export default defineConfig({
     ],
     logo: '/img/plugin-logo.svg',
     editLink: {
-      pattern: 'https://github.com/nystudio107/craft-instantanalytics-ga4/edit/develop-v4/docs/docs/:path',
+      pattern: 'https://github.com/nystudio107/craft-instantanalytics-ga4/edit/develop-v5/docs/docs/:path',
       text: 'Edit this page on GitHub'
     },
     algolia: {
@@ -45,8 +45,9 @@ export default defineConfig({
       {text: 'Changelog', link: 'https://nystudio107.com/plugins/instant-analytics-ga4/changelog'},
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-instantanalytics-ga4/issues'},
       {
-        text: 'v4', items: [
-          {text: 'v4', link: '/'},
+        text: 'v5', items: [
+          {text: 'v5', link: '/'},
+          {text: 'v4', link: 'https://nystudio107.com/docs/instant-analytics-ga4/v4/'},
           {text: 'v3', link: 'https://nystudio107.com/docs/instant-analytics-ga4/v3/'},
         ],
       },
